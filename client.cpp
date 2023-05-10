@@ -6,17 +6,18 @@
 #include <netinet/in.h> /* struct sockaddr_in, struct sockaddr */
 #include <netdb.h>      /* struct hostent, gethostbyname */
 #include <arpa/inet.h>
+#include <string>
 #include "helpers.h"
 #include "requests.h"
 
 int main(int argc, char *argv[])
 {
-    char *message;
-    char *response;
+    std::string message, response;
     int sockfd;
 
         
     // Ex 1.1: GET dummy from main server
+    
     // Ex 1.2: POST dummy and print response from main server
     // Ex 2: Login into main server
     // Ex 3: GET weather key from main server

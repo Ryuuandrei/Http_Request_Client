@@ -1,4 +1,4 @@
-CC=gcc
+CC=g++
 CFLAGS=-I.
 
 client: client.c requests.c helpers.c buffer.c

@@ -6,6 +6,7 @@
 #include <netinet/in.h> /* struct sockaddr_in, struct sockaddr */
 #include <netdb.h>      /* struct hostent, gethostbyname */
 #include <arpa/inet.h>
+#include <string>
 #include "helpers.h"
 #include "buffer.h"
 
@@ -20,13 +21,13 @@ void error(const char *msg)
     exit(0);
 }
 
-void compute_message(char *message, const char *line)
+void compute_message(std::string& message, const std::string& line)
 {
-    strcat(message, line);
-    strcat(message, "\r\n");
+    message += line;
+    message += "\r\n";
 }
 
-int open_connection(char *host_ip, int portno, int ip_type, int socket_type, int flag)
+int open_connection(const char *host_ip, int portno, int ip_type, int socket_type, int flag)
 {
     struct sockaddr_in serv_addr;
     int sockfd = socket(ip_type, socket_type, flag);
@@ -50,7 +51,7 @@ void close_connection(int sockfd)
     close(sockfd);
 }
 
-void send_to_server(int sockfd, char *message)
+void send_to_server(int sockfd, const char *message)
 {
     int bytes, sent = 0;
     int total = strlen(message);

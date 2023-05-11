@@ -10,12 +10,14 @@
 #include "helpers.h"
 #include "requests.h"
 
+// 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 - github token
+
 int main(int argc, char *argv[])
 {
     std::string message, response;
     int sockfd;
 
-        
+    //
     // Ex 1.1: GET dummy from main server
     
     // Ex 1.2: POST dummy and print response from main server

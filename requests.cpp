@@ -13,33 +13,27 @@
 std::string compute_get_request(const char* host, const char* url, const char* query_params, std::string* cookies, std::string* auth)
 {
     std::string message;
-    std::string line;
 
     // Step 1: write the method name, URL, request params (if any) and protocol type
     char* _line = new char[LINELEN];
 
-    if (query_params != nullptr) {
+    if (query_params != nullptr)
         sprintf(_line, "GET %s?%s HTTP/1.1", url, query_params);
-        line = _line;
-        delete[] _line;
-
-    } else {
+    else
         sprintf(_line, "GET %s HTTP/1.1", url);
-        line = _line;
-        delete[] _line;
-    }
 
-    compute_message(message, line);
+    compute_message(message, _line);
 
     // Step 2: add the host
     sprintf(_line, "HOST: %s", host);
     compute_message(message, _line);
 
+    // Step 3 (optional): add headers and/or cookies, according to the protocol format
     if (auth) {
         sprintf(_line, "Authorization: Bearer %s", auth->c_str());
         compute_message(message, _line);
     }
-    // Step 3 (optional): add headers and/or cookies, according to the protocol format
+
     if (cookies) {
         message += "Cookie: ";
         sprintf(_line, "%s", cookies->c_str());
@@ -54,8 +48,6 @@ std::string compute_get_request(const char* host, const char* url, const char* q
 std::string compute_post_request(const char* host, const char* url, const char* content_type, std::string body_data, std::string* cookies, std::string* auth)
 {
     std::string message;
-    std::string line;
-    std::string body_data_buffer;
 
     // Step 1: write the method name, URL and protocol type
     char* _line = new char[LINELEN];
@@ -99,36 +91,29 @@ std::string compute_post_request(const char* host, const char* url, const char* 
 std::string compute_delete_request(const char* host, const char* url, const char* query_params, std::string* cookies, std::string* auth) {
 
     std::string message;
-    std::string line;
 
     // Step 1: write the method name, URL, request params (if any) and protocol type
     char* _line = new char[LINELEN];
 
-    if (query_params != nullptr) {
+    if (query_params != nullptr)
         sprintf(_line, "DELETE %s?%s HTTP/1.1", url, query_params);
-        line = _line;
-        delete[] _line;
-
-    } else {
+    else
         sprintf(_line, "DELETE %s HTTP/1.1", url);
-        line = _line;
-        delete[] _line;
-    }
 
-    compute_message(message, line);
+    compute_message(message, _line);
 
     // Step 2: add the host
     sprintf(_line, "HOST: %s", host);
     compute_message(message, _line);
 
+    // Step 3 (optional): add headers and/or cookies, according to the protocol format
     if (auth) {
         sprintf(_line, "Authorization: Bearer %s", auth->c_str());
         compute_message(message, _line);
     }
-    // Step 3 (optional): add headers and/or cookies, according to the protocol format
+
     if (cookies) {
-        message += "Cookie: ";
-        sprintf(_line, "%s", cookies->c_str());
+        sprintf(_line, "Cookie: %s", cookies->c_str());
         compute_message(message, _line);
     }
     // Step 4: add final new line

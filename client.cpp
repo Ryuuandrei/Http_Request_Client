@@ -18,12 +18,6 @@ using json = nlohmann::json;
 int main(int argc, char *argv[])
 {   
 
-    // int enable = 1;
-    // if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
-    //     perror("setsockopt(SO_REUSAADDR) failed");
-
-
-
     std::string message, response, command;
     std::string set_cookie;
     std::string jwt;
@@ -55,17 +49,15 @@ int main(int argc, char *argv[])
                 {"password", password}
             };
             message = compute_post_request(HOST.c_str(), "/api/v1/tema/auth/register", "application/json", data.dump(), nullptr, nullptr);
-            // std::cout << message << "\n";
+
             send_to_server(sockfd, message.c_str());
 
             response = receive_from_server(sockfd);
-            // std::cout << response << "\n";
+
             std::stringstream check(response);
             std::string intermediate;
             getline(check, intermediate, ' ');
             getline(check, intermediate, ' ');
-
-            // std::cout << intermediate << "\n";
 
             if (intermediate.compare("201") == 0) {
                 std::cout << intermediate << " - User registered succesfully!\n";
@@ -94,26 +86,22 @@ int main(int argc, char *argv[])
                 {"password", password}
             };
             message = compute_post_request(HOST.c_str(), "/api/v1/tema/auth/login", "application/json", data.dump(), nullptr, nullptr);
-            // std::cout << message << "\n";
+
             send_to_server(sockfd, message.c_str());
 
             response = receive_from_server(sockfd);
-
-            // std::cout << response << "\n";
 
             std::stringstream check(response);
             std::string intermediate;
             getline(check, intermediate, ' ');
             getline(check, intermediate, ' ');
 
-            // std::cout << intermediate << "\n";
             if (intermediate.compare("200") == 0) {
                 std::cout << intermediate << " - Logged in as " << username << ". Welcome!\n";
                 char* l = (char*)strstr(response.c_str(), "Set-Cookie");
                 strtok(l, " ");
                 set_cookie = strtok(nullptr, " ");
                 set_cookie[set_cookie.size() - 1] = '\0';
-                // std::cout << set_cookie << "\n";
             }
 
             const char* r_string = strstr(response.c_str(), "{"); 
@@ -129,23 +117,17 @@ int main(int argc, char *argv[])
 
             message = compute_get_request(HOST.c_str(), "/api/v1/tema/library/access", nullptr, &set_cookie, nullptr);
 
-            // std::cout << message << "\n";
-
             send_to_server(sockfd, message.c_str());
             
             response = receive_from_server(sockfd);
-
-            // std::cout << response << "\n";
 
             std::stringstream check(response);
             std::string intermediate;
             getline(check, intermediate, ' ');
             getline(check, intermediate, ' ');
 
-            // std::cout << intermediate << "\n";
             if (intermediate.compare("200") == 0) {
                 std::cout << intermediate << " - You entered the library!\n";
-                // std:: cout << set_cookie << "\n";
             }
 
             const char* r_string = strstr(response.c_str(), "{"); 
@@ -158,7 +140,6 @@ int main(int argc, char *argv[])
                 } else {
                     jwt = r_data["token"];
                     jwt.erase(std::remove(jwt.begin(), jwt.end(), '\"'), jwt.end());
-                    // std::cout << jwt << "\n";
                 }
             }
         }
@@ -167,20 +148,15 @@ int main(int argc, char *argv[])
 
             message = compute_get_request(HOST.c_str(), "/api/v1/tema/library/books", nullptr, nullptr, &jwt);
 
-            // std::cout << message << "\n";
-
             send_to_server(sockfd, message.c_str());
             
             response = receive_from_server(sockfd);
-
-            // std::cout << response << "\n";
 
             std::stringstream check(response);
             std::string intermediate;
             getline(check, intermediate, ' ');
             getline(check, intermediate, ' ');
 
-            // std::cout << intermediate << "\n";
             if (intermediate.compare("200") == 0) {
                 std::cout << intermediate << " - Here are your books!\n";
             }
@@ -206,26 +182,23 @@ int main(int argc, char *argv[])
             std::cin >> id;
 
             std::string PATH ("/api/v1/tema/library/books/" + std::to_string(id));
+
             message = compute_get_request(HOST.c_str(), PATH.c_str(), nullptr, nullptr, &jwt);
-            // std::cout << message << "\n";
+
             send_to_server(sockfd, message.c_str());
 
             response = receive_from_server(sockfd);
-
-            // std::cout << response << "\n";
 
             std::stringstream check(response);
             std::string intermediate;
             getline(check, intermediate, ' ');
             getline(check, intermediate, ' ');
 
-            // std::cout << intermediate << "\n";
             if (intermediate.compare("200") == 0) {
                 std::cout << intermediate << " - The book you were looking for!\n";
-                // std::cout << set_cookie << "\n";
             }
 
-            const char* r_string = strstr(response.c_str(), "{"); 
+            const char* r_string = strstr(response.c_str(), "{");
             if (r_string != nullptr) {
                 json r_data = json::parse(r_string);
                 if (r_data["error"] != nullptr) {
@@ -233,7 +206,7 @@ int main(int argc, char *argv[])
                     err.erase(std::remove(err.begin(), err.end(), '\"'), err.end());
                     std::cout << err << "\n";
                 } else {
-                    std::cout << r_data << "\n";
+                    std::cout << std::setw(4) <<  r_data << "\n";
                 }
             }
 
@@ -244,7 +217,7 @@ int main(int argc, char *argv[])
             std::string title, author, genre, publisher;
             int page_count;
             std::cout <<"title= ";
-            std::getchar();
+            std::getline(std::cin, title);
             std::getline(std::cin, title);
             std::cout << "author= ";
             std::getline(std::cin, author);
@@ -265,22 +238,18 @@ int main(int argc, char *argv[])
 
 
             message = compute_post_request(HOST.c_str(), "/api/v1/tema/library/books", "application/json",  data.dump(), nullptr, &jwt);
-            // std::cout << message << "\n";
+
             send_to_server(sockfd, message.c_str());
 
             response = receive_from_server(sockfd);
-
-            // std::cout << response << "\n";
 
             std::stringstream check(response);
             std::string intermediate;
             getline(check, intermediate, ' ');
             getline(check, intermediate, ' ');
 
-            // std::cout << intermediate << "\n";
             if (intermediate.compare("200") == 0) {
                 std::cout << intermediate << " - Your book was added succesfully!\n";
-                // std::cout << set_cookie << "\n";
             }
 
             const char* r_string = strstr(response.c_str(), "{"); 
@@ -300,22 +269,18 @@ int main(int argc, char *argv[])
 
             std::string PATH ("/api/v1/tema/library/books/" + std::to_string(id));
             message = compute_delete_request(HOST.c_str(), PATH.c_str(), nullptr, nullptr, &jwt);
-            std::cout << message << "\n";
+
             send_to_server(sockfd, message.c_str());
 
             response = receive_from_server(sockfd);
-
-            std::cout << response << "\n";
 
             std::stringstream check(response);
             std::string intermediate;
             getline(check, intermediate, ' ');
             getline(check, intermediate, ' ');
 
-            // std::cout << intermediate << "\n";
             if (intermediate.compare("200") == 0) {
                 std::cout << intermediate << " - Book with id " << id << " was succesfully deleted!\n";
-                // std::cout << set_cookie << "\n";
             }
 
             const char* r_string = strstr(response.c_str(), "{"); 
@@ -335,14 +300,11 @@ int main(int argc, char *argv[])
             send_to_server(sockfd, message.c_str());
 
             response = receive_from_server(sockfd);
-            std::cout << "mesaj primit\n";
-            // std::cout << response << "\n";
+
             std::stringstream check(response);
             std::string intermediate;
             getline(check, intermediate, ' ');
             getline(check, intermediate, ' ');
-
-            // std::cout << intermediate << "\n";
 
             if (intermediate.compare("200") == 0) {
                 std::cout << intermediate << " - Good bye!\n";

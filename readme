@@ -1,0 +1,47 @@
+## Disclaimer
+    In realizarea acestei teme am completat si folosit scheletul dispus in cadrul laboratorului 9.
+
+# Clientul
+
+## Prezentare generala
+
+* Primeste o comanda de la tastatura, alaturi de anumiti parametii dupa caz, creeaza cererea http corespunzatoare acelei comenzi, o trimite catre server si acesta interpreteaza raspunsul server-ului.
+
+* Pentru fiecare comanda se deschide si se inchide un socket nou
+
+* Clientul ofera feedback in legatura cu status-ul comenzii, daca aceasta s-a executat sau nu, sau s-a primit o eroare.
+
+* In caz de eroare, clientul nu are un mecanism propriu pentru error handling, ci v-a afisa eroare pe care o primeste de la server.
+
+# Structura unei comenzi
+
+1. citeste argumente de la tastatura(optional)
+
+2. compune request-ul specific comenzii
+
+3. trimite request-ul catre server
+
+4. primeste raspunsul server-ului
+
+5. verifica status-ul (200/201 - ok)
+
+6. extrage informatiile necesare din raspuns / ofera feedback in cazul in care s-a intamplat o eroare
+
+## Exceptii
+
+* exit - v-a inchide clientul
+
+# Conditii
+
+Username-ul si parola nu trebuie sa contina spatii, de aceea am folosit _**std::cin**_, astfel daca se introduce un spatiu cuvantul urmator nu mai este luat in calcul pentru campul respectiv. La inregistrare utilizatorul va fii informat de acest aspect.
+
+Daca input-ul este:
+
+> register\
+> Username= test1 test2
+
+Username-ul contului creat este test1, iar test2 v-a fii parola asociata contului.
+
+Pentru string-urile care nu au aceasta restrictie am folosit _**std::getline**_.
+
+Id-ul unei carti trebuie sa fie neaparat numar. Daca nu este numar sau are spatii, utilizatorul v-a trebui sa reintroduca id-ul.

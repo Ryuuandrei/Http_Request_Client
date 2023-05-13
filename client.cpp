@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 
     for(;;) {
 
-        int sockfd, id;
+        int sockfd;
         std::string HOST = "34.254.242.81";
         sockfd = open_connection(HOST.c_str(), 8080, AF_INET, SOCK_STREAM, 0);
         if (sockfd < 0) {
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
         if (command.compare("register") == 0) {
 
             std::string username, password;
-
+            std::cout << "Username and password should not contain spaces!\n";
             std::cout << "Username: ";
             std::cin >> username;
             std::cout << "Password: ";
@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
             if (intermediate.compare("200") == 0) {
                 std::cout << intermediate << " - You entered the library!\n";
             }
-
+ 
             const char* r_string = strstr(response.c_str(), "{"); 
             if (r_string != nullptr) {
                 json r_data = json::parse(r_string);
@@ -177,11 +177,20 @@ int main(int argc, char *argv[])
         }
 
         else if (command.compare("get_book") == 0) {
+            
+            std::string id;
 
             std::cout << "id= ";
-            std::cin >> id;
+            std::getline(std::cin, id);
+            std::getline(std::cin, id);
 
-            std::string PATH ("/api/v1/tema/library/books/" + std::to_string(id));
+            while (id.find_first_not_of("0123456789") != std::string::npos) {
+                std::cout << "enter a number!\n";  
+                std::cout << "id= ";
+                std::getline(std::cin, id);
+            }
+
+            std::string PATH ("/api/v1/tema/library/books/" + id);
 
             message = compute_get_request(HOST.c_str(), PATH.c_str(), nullptr, nullptr, &jwt);
 
@@ -214,8 +223,7 @@ int main(int argc, char *argv[])
 
         else if (command.compare("add_book") == 0) {
 
-            std::string title, author, genre, publisher;
-            int page_count;
+            std::string title, author, genre, publisher, page_count;
             std::cout <<"title= ";
             std::getline(std::cin, title);
             std::getline(std::cin, title);
@@ -226,13 +234,19 @@ int main(int argc, char *argv[])
             std::cout << "publisher= ";
             std::getline(std::cin, publisher);
             std::cout << "page_count= ";
-            std::cin >> page_count;
+            std::getline(std::cin, page_count);
+
+            while (page_count.find_first_not_of("0123456789") != std::string::npos) {
+                std::cout << "enter a number!\n";  
+                std::cout << "page_count= ";
+                std::getline(std::cin, page_count);
+            }
 
             json data = {
                 {"title", title},
                 {"author", author},
                 {"genre", genre},
-                {"page_count", page_count},
+                {"page_count", stoi(page_count)},
                 {"publisher", publisher}
             };
 
@@ -264,10 +278,19 @@ int main(int argc, char *argv[])
 
         else if (command.compare("delete_book") == 0) {
 
-            std::cout << "id= ";
-            std::cin >> id;
+            std::string id;
 
-            std::string PATH ("/api/v1/tema/library/books/" + std::to_string(id));
+            std::cout << "id= ";
+            std::getline(std::cin, id);
+            std::getline(std::cin, id);
+
+            while (id.find_first_not_of("0123456789") != std::string::npos) {
+                std::cout << "enter a number!\n";  
+                std::cout << "id= ";
+                std::getline(std::cin, id);
+            }
+
+            std::string PATH ("/api/v1/tema/library/books/" + id);
             message = compute_delete_request(HOST.c_str(), PATH.c_str(), nullptr, nullptr, &jwt);
 
             send_to_server(sockfd, message.c_str());
@@ -328,7 +351,6 @@ int main(int argc, char *argv[])
         }
 
         close(sockfd);
-
 
     }
 
